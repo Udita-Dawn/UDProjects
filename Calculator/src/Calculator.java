@@ -68,7 +68,8 @@ public class Calculator {
                                     break;
                             }
 
-                            textField.setText(String.valueOf(result));
+                            //textField.setText(String.valueOf(result));
+                            textField.setText(num1[0] + operator[0] + num2 + "=" + result);
                         }
                     } else if (command.equals("C")) {
                         textField.setText("");
