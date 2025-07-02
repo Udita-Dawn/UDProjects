@@ -3,7 +3,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class Calculator {
+public class Example {
     public static void main(String[] args) {
         // Create the frame
         JFrame frame = new JFrame("Simple Calculator");
@@ -30,57 +30,48 @@ public class Calculator {
         };
 
         // Add buttons to the panel
-        final double[] num1 = {0};
-        final String[] operator = {""};
-
         for (String text : buttons) {
             JButton button = new JButton(text);
+            button.setFont(new Font("Arial", Font.BOLD, 18));
             buttonPanel.add(button);
+
+            // Add action listener to buttons
             button.addActionListener(new ActionListener() {
+                String operator = "";
+                double num1 = 0;
+
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     String command = e.getActionCommand();
 
-                    if (command.matches("\\d")) { // If it's a digit
+                    if (command.matches("\\d")) { // If it's a number
                         textField.setText(textField.getText() + command);
-                    } else if ("+-*/".contains(command)) {
-                        if (!textField.getText().isEmpty()) {
-                            num1[0] = Double.parseDouble(textField.getText());
-                            operator[0] = command;
-                            textField.setText("");
-                        }
-                    } else if (command.equals("=")) {
-                        if (!textField.getText().isEmpty()) {
-                            double num2 = Double.parseDouble(textField.getText());
-                            double result = 0;
-
-                            switch (operator[0]) {
-                                case "+": result = num1[0] + num2; break;
-                                case "-": result = num1[0] - num2; break;
-                                case "*": result = num1[0] * num2; break;
-                                case "/":
-                                    if (num2 != 0) {
-                                        result = num1[0] / num2;
-                                    } else {
-                                        textField.setText("Error");
-                                        return;
-                                    }
-                                    break;
-                            }
-
-                            textField.setText(String.valueOf(result));
-                        }
-                    } else if (command.equals("C")) {
+                    } else if (command.equals("C")) { // Clear
                         textField.setText("");
-                        num1[0] = 0;
-                        operator[0] = "";
+                        operator = "";
+                        num1 = 0;
+                    } else if (command.equals("=")) { // Calculate result
+                        double num2 = Double.parseDouble(textField.getText());
+                        double result = 0;
+
+                        switch (operator) {
+                            case "+" -> result = num1 + num2;
+                            case "-" -> result = num1 - num2;
+                            case "*" -> result = num1 * num2;
+                            case "/" -> result = num1 / num2;
+                        }
+
+                        textField.setText(String.valueOf(result));
+                        operator = "";
+                    } else { // Operator
+                        operator = command;
+                        num1 = Double.parseDouble(textField.getText());
+                        textField.setText("");
                     }
                 }
-
-
             });
-
         }
+
         frame.add(buttonPanel, BorderLayout.CENTER);
 
         // Make the frame visible
